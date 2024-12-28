@@ -7,7 +7,26 @@ import BaseContainer from '@/components/base/BaseContainer.vue'
 import BaseForm from '@/components/base/BaseForm.vue'
 import BaseInput from '@/components/base/BaseInput.vue'
 
-const cafeCollection = ref([
+import { useFirestore, useCollection } from 'vuefire'
+import { collection } from 'firebase/firestore'
+
+const db = useFirestore()
+const cafeCollection = useCollection(collection(db, 'cafes'))
+
+/* const q = query(collection(db, 'cafes'))
+const querySnapshot = await getDocs(q)
+
+onSnapshot(q, (querySnapshot) => {
+  cafeCollection.value = []
+
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    console.log(doc.id, ' => ', doc.data())
+    cafeCollection.value.push(doc.data())
+  })
+})
+ */
+/* const cafeCollection = ref([
   {
     id: '413a9451-1b56-4219-86d7-2334c84beaac',
     name: 'A Queso The Mondays',
@@ -44,7 +63,7 @@ const cafeCollection = ref([
     favorite: false,
     description: '',
   },
-])
+]) */
 
 const filterParams = ref({
   text: '',
