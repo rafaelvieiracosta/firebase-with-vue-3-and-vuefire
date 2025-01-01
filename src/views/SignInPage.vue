@@ -3,7 +3,10 @@ import { ref } from 'vue'
 
 import { useFirebaseAuth } from 'vuefire'
 
-import { createUserWithEmailAndPassword } from 'firebase/auth'
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from 'firebase/auth'
 
 import BaseButton from '@/components/base/BaseButton.vue'
 import BaseContainer from '@/components/base/BaseContainer.vue'
@@ -11,7 +14,7 @@ import BaseCard from '@/components/base/BaseCard.vue'
 import BaseForm from '@/components/base/BaseForm.vue'
 import BaseInput from '@/components/base/BaseInput.vue'
 
-const newUser = ref({
+const userInput = ref({
   email: '',
   password: '',
 })
@@ -21,8 +24,23 @@ const auth = useFirebaseAuth()
 async function createUser() {
   createUserWithEmailAndPassword(
     auth,
-    newUser.value.email,
-    newUser.value.password
+    userInput.value.email,
+    userInput.value.password
+  )
+    .then((userCredential) => {
+      const user = userCredential.user
+      console.log(user)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+}
+
+async function signInToFirebase() {
+  signInWithEmailAndPassword(
+    auth,
+    userInput.value.email,
+    userInput.value.password
   )
     .then((userCredential) => {
       const user = userCredential.user
@@ -41,14 +59,14 @@ async function createUser() {
       <template v-slot:default>
         <BaseForm>
           <BaseInput
-            v-model="newUser.email"
+            v-model="userInput.email"
             type="email"
             label="Email"
             required
             placeholder="eleanorshellstrop@thegoodplace.com"
           />
           <BaseInput
-            v-model="newUser.password"
+            v-model="userInput.password"
             label="Password"
             type="password"
             required
@@ -56,7 +74,10 @@ async function createUser() {
         </BaseForm>
       </template>
       <template v-slot:actions>
-        <BaseButton variant="tonal" color="success"> Sign In </BaseButton>
+        <BaseButton variant="tonal" color="success" @click="signInToFirebase">
+          Sign In
+        </BaseButton>
+
         <BaseButton
           variant="tonal"
           color="secondary"
